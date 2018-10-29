@@ -77,24 +77,31 @@ body {
     width: 54%;
 }
 
-#elephant {
-    position: absolute;
-    left: 59%;
-    top: 50%;
-    width: 20%;
-}
-
 #points {
     position: absolute;
     top: 2%;
     width: 13%;
     left: 85%;
+    opacity: 0.9;
+}
+
+#time {
+    position: absolute;
+    top: 2%;
+    width: 13%;
+    left: 71%;
+    opacity: 0.9;
 }
 
 .energy {
     position: absolute;
     top: 2%;
     width: 7%;
+    animation-name: fade-pulse;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+    animation-direction: alternate;
 }
 
 #energy_1 {
@@ -109,11 +116,34 @@ body {
     left: 18%;
 }
 
-#time {
+/* ELEPHANTS */
+
+#elephant {
     position: absolute;
-    top: 2%;
-    width: 13%;
-    left: 71%;
+    left: 59%;
+    top: 50%;
+    width: 20%;
+
+    animation-name: elephant;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-direction: alternate;
+}
+
+
+@keyframes elephant {
+    0% {
+        top: 51%;
+    }
+
+    50% {
+        top: 51%;
+    }
+
+    100% {
+        top: 50.5%;
+    }
 }
 
 /* CLOUDS */
@@ -125,10 +155,7 @@ body {
 }
 
 #cloud_1 {
-    animation-name: cloud_1;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+    animation: cloud_1 4s infinite linear;
 }
 
 @keyframes cloud_1 {
@@ -231,11 +258,64 @@ body {
 /* ANIMATIONS */
 
 .fade-in {
+    opacity: 0;
     animation-name: fade-in;
-    animation-duration: 4s;
+    animation-duration: 1s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+    animation-timing-function: ease-in;
+    animation-delay: 2.5s;
 }
+
+#thought_1 {
+    opacity: 0;
+    animation-name: fade-in;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-delay: 2s;
+}
+
+#thought_2 {
+    opacity: 0;
+    animation-name: fade-in;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-delay: 1.5s;
+}
+
+#thought_3 {
+    opacity: 0;
+    animation-name: fade-in;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-delay: 1s;
+}
+
+#thought_4 {
+    opacity: 0;
+    animation-name: fade-in;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-delay: 0.5s;
+}
+
+
+
+@keyframes fade-pulse {
+    0% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0.7;
+    }
+}
+
+
 
 @keyframes fade-in {
     0% {
