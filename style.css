@@ -1,0 +1,248 @@
+/* HTML */
+
+#menu_background img {
+    width: 100%;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+#screen {
+    /* @see https://stackoverflow.com/a/20593342/1155596 */
+    width: 100vw;
+    height: 56.25vw;
+    max-height: 100vh;
+    max-width: 177.78vh;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+}
+
+#game {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+
+#gameover_background img {
+    width: 100%;
+
+}
+
+#levelcomplete img {
+    width: 100%;
+
+}
+
+#menu_background {
+    display: none;
+}
+
+
+
+/* FUNCTIONS */
+
+.hidden {
+    display: none;
+}
+
+
+.full-screen {
+    width: 100%;
+    max-height: 100%;
+}
+
+
+
+/* ELEMENTS */
+
+.element img {
+    width: 100%;
+    height: 100%;
+}
+
+.dream {
+    position: absolute;
+    left: 25%;
+    top: 17%;
+    width: 54%;
+}
+
+#elephant {
+    position: absolute;
+    left: 59%;
+    top: 50%;
+    width: 20%;
+}
+
+#points {
+    position: absolute;
+    top: 2%;
+    width: 13%;
+    left: 85%;
+}
+
+.energy {
+    position: absolute;
+    top: 2%;
+    width: 7%;
+}
+
+#energy_1 {
+    left: 2%;
+}
+
+#energy_2 {
+    left: 10%;
+}
+
+#energy_3 {
+    left: 18%;
+}
+
+#time {
+    position: absolute;
+    top: 2%;
+    width: 13%;
+    left: 71%;
+}
+
+/* CLOUDS */
+
+.cloud {
+    position: absolute;
+    top: 14%;
+    width: 18%;
+}
+
+#cloud_1 {
+    animation-name: cloud_1;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes cloud_1 {
+    0% {
+        left: 24%;
+        top: 13%;
+    }
+
+    25% {
+        left: 25%;
+        top: 14%;
+    }
+
+    50% {
+        left: 24%;
+        top: 15%;
+    }
+
+    75% {
+        left: 23%;
+        top: 14%;
+    }
+
+    100% {
+        left: 24%;
+        top: 13%;
+    }
+}
+
+#cloud_2 {
+    animation-name: cloud_2;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes cloud_2 {
+    0% {
+        left: 45%;
+        top: 13%;
+    }
+
+    25% {
+        left: 44%;
+        top: 15%;
+    }
+
+    50% {
+        left: 43%;
+        top: 14%;
+    }
+
+    75% {
+        left: 44%;
+        top: 12%;
+    }
+
+    100% {
+        left: 45%;
+        top: 13%;
+    }
+}
+
+#cloud_3 {
+    animation-name: cloud_3;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes cloud_3 {
+    0% {
+        left: 64%;
+        top: 14%;
+    }
+
+    25% {
+        left: 63%;
+        top: 13%;
+    }
+
+    50% {
+        left: 64%;
+        top: 16%;
+    }
+
+    75% {
+        left: 65%;
+        top: 15%;
+    }
+
+    100% {
+        left: 64%;
+        top: 14%;
+    }
+}
+
+
+
+/* ANIMATIONS */
+
+.fade-in {
+    animation-name: fade-in;
+    animation-duration: 4s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
