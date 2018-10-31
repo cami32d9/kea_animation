@@ -14,24 +14,24 @@ function showStart() {
     document.querySelector("#start").classList.add("fade-in");
     document.querySelector(".button_play").addEventListener("click", hideStart);
     document.querySelector(".button_settings").addEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").addEventListener("click", hideStart);
+    document.querySelector(".button_quit").addEventListener("click", quitGame);
 }
+
+
+//START GAME
 
 function hideStart() {
     console.log("hideStart");
 
-    document.querySelector(".button_play").addEventListener("click", hideStart);
-    document.querySelector(".button_settings").addEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").addEventListener("click", hideStart);
+    document.querySelector(".button_play").removeEventListener("click", hideStart);
+    document.querySelector(".button_settings").removeEventListener("click", hideStartButtons);
+    document.querySelector(".button_quit").removeEventListener("click", quitGame);
 
     document.querySelector(".button_play").classList.remove("pulse");
     document.querySelector("#start").classList.add("fade_out");
     document.querySelector("#menu_background").classList.add("fade_out");
     document.querySelector("#start").addEventListener("animationend", startGame);
 }
-
-
-//START GAME
 
 function startGame() {
     console.log("startGame");
@@ -43,6 +43,18 @@ function startGame() {
     document.querySelector("#game").classList.add("fade_in");
 }
 
+//QUIT
+
+function quitGame() {
+    console.log("quitGame");
+    document.querySelector(".button_play").removeEventListener("click", hideStart);
+    document.querySelector(".button_settings").removeEventListener("click", hideStartButtons);
+    document.querySelector(".button_quit").removeEventListener("click", quitGame);
+
+    document.querySelector(".button_quit").classList.remove("pulse");
+    document.querySelector("#start").classList.add("fade_out");
+    document.querySelector("#menu_background").classList.add("fade_out");
+}
 
 
 //SETTINGS SCREEN
@@ -82,29 +94,10 @@ function hideSettings() {
 function showStartButtons() {
     console.log("showStartButtons");
     document.querySelector("#settings").removeEventListener("animationend", showStartButtons);
-    document.querySelector("#settings").classList.add("hidden");
     document.querySelector("#start").classList.remove("hidden");
-    document.querySelector("#start").classList.remove("fade-out");
-    document.querySelector("#start").classList.add("fade-in");
+    document.querySelector("#start").classList.add("fade_in");
+    document.querySelector(".button_settings").classList.add("pulse");
     document.querySelector(".button_play").addEventListener("click", hideStart);
     document.querySelector(".button_settings").addEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").addEventListener("click", hideStart);
+    document.querySelector(".button_quit").addEventListener("click", quitGame);
 }
-
-
-
-//
-//function showStartButtons() {
-//    console.log("showStartButtons");
-//    document.querySelector("#settings").addEventListener("animationend", showStartButtons);
-//    document.querySelector("start").classList.remove("fade_out");
-//    document.querySelector("start").classList.add("fade_in");
-//
-//        document.querySelector(".button_play").classList.add("fade_in");
-//        document.querySelector(".button_settings").classList.add("fade_in");
-//        document.querySelector(".button_quit").classList.add("fade_in");
-//
-//    document.querySelector(".button_play").addEventListener("click", hideStart);
-//    document.querySelector(".button_settings").addEventListener("click", hideStartButtons);
-//    document.querySelector(".button_quit").addEventListener("click", hideStart);
-//}
