@@ -11,10 +11,7 @@
 
 <body>
     <div id="screen">
-        <div id="menu_background" class="hidden">
-            <img src="elements/background_title.svg" alt="Title background">
-        </div>
-        <div id="game">
+        <div id="game" class="hidden">
             <img id="game_background" class="full-screen" src="elements/background_game.svg" alt="Game background">
             <div id="game_elements">
                 <div id="elephant" class="element">
@@ -83,25 +80,28 @@
                 </div>
             </div>
         </div>
-        <div id="start" class="hidden">
-            <div class="button button_play">
+        <div id="start">
+            <div id="menu_background">
+                <img src="elements/background_title.svg" alt="Title background">
+            </div>
+            <div class="button button_play element pulse">
                 <img src="elements/button_play.svg" alt="Play">
             </div>
-            <div class="button button_settings">
+            <div class="button button_settings element pulse">
                 <img src="elements/button_settings.svg" alt="Settings">
             </div>
-            <div class="button button_quit">
+            <div class="button button_quit element pulse">
                 <img src="elements/button_quit.svg" alt="Quit">
             </div>
         </div>
         <div id="settings" class="hidden">
-            <div class="button button_music">
+            <div class="button button_music element pulse">
                 <img src="elements/button_music.svg" alt="Music">
             </div>
-            <div class="button button_effects">
+            <div class="button button_effects element pulse">
                 <img src="elements/button_effects.svg" alt="Effects">
             </div>
-            <div class="button button_back">
+            <div class="button button_back element pulse">
                 <img src="elements/button_back.svg" alt="Back">
             </div>
             <div class="muted">
@@ -135,6 +135,7 @@
         </div>
     </div>
 
+    <script src="script.js"></script>
 </body>
 
 </html>

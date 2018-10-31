@@ -9,6 +9,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
+    background-color: #19315B;
 }
 
 #screen {
@@ -43,9 +44,7 @@ body {
 
 }
 
-#menu_background {
-    display: none;
-}
+#menu_background {}
 
 
 
@@ -325,4 +324,104 @@ body {
     100% {
         opacity: 1;
     }
+}
+
+.button_play {
+    position: absolute;
+    top: 30%;
+    left: 37.5%;
+    animation-duration: 1.5s;
+}
+
+.button {
+    width: 25%;
+}
+
+.button_settings {
+    position: absolute;
+    top: 50%;
+    left: 37.5%;
+    animation-duration: 1.7s;
+}
+
+.button_quit {
+    position: absolute;
+    top: 70%;
+    left: 37.5%;
+    animation-duration: 2s;
+}
+
+
+.pulse {
+    animation-name: pulse_kf;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in;
+}
+
+@keyframes pulse_kf {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.03);
+    }
+}
+
+.fade_out {
+    animation-name: fadeout_kf;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeout_kf {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.fade_in {
+    animation-name: fadein_kf;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadein_kf {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.button_music {
+    position: absolute;
+    top: 30%;
+    left: 37.5%;
+    animation-duration: 1.5s;
+}
+
+.button_effects {
+
+    position: absolute;
+    top: 50%;
+    left: 37.5%;
+    animation-duration: 1.7s;
+}
+
+.button_back {
+
+    position: absolute;
+    top: 70%;
+    left: 37.5%;
+    animation-duration: 2s;
 }
