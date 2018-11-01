@@ -7,97 +7,278 @@ function sidenVises() {
     showStart();
 }
 
+const Music = {
+    enabled: true,
+    toggle: function () {
+        if (Music.enabled) {
+            Music.enabled = false;
+            console.log("Music is disabled");
+        } else {
+            Music.enabled = true;
+            console.log("Music is enabled");
+        }
+    }
+};
+
+const Effects = {
+    enabled: true,
+    toggle: function () {
+        if (Effects.enabled) {
+            Effects.enabled = false;
+            console.log("Effects is disabled");
+        } else {
+            Effects.enabled = true;
+            console.log("Effects is enabled");
+        }
+    }
+};
+
+const MenuBackground = {
+    /** @type Element */
+    element: document.querySelector('#menu_background'),
+    show: function () {
+        MenuBackground.element.classList.remove('hidden');
+        MenuBackground.element.classList.remove('fade_out');
+        MenuBackground.element.classList.add('fade_in');
+    },
+    hide: function (next) {
+        MenuBackground.element.classList.remove('fade_in');
+        MenuBackground.element.classList.add('fade_out');
+        MenuBackground.element.addEventListener('animationend', function _listener() {
+            MenuBackground.element.classList.add('hidden');
+            MenuBackground.element.removeEventListener('animationend', _listener);
+            next && next();
+        });
+    }
+};
+
+const Start = {
+    scene: {
+        /** @type Element */
+        element: document.querySelector('#start'),
+        show: function () {
+            Start.scene.element.classList.remove('hidden');
+            Start.scene.element.classList.remove('fade_out');
+            Start.scene.element.classList.add('fade_in');
+        },
+        hide: function (next) {
+            Start.scene.element.classList.remove('fade_in');
+            Start.scene.element.classList.add('fade_out');
+            Start.scene.element.addEventListener('animationend', function _listener() {
+                Start.scene.element.classList.add('hidden');
+                Start.scene.element.removeEventListener('animationend', _listener);
+                next();
+            });
+        }
+    },
+    playButton: {
+        /** @type Element */
+        element: document.querySelector('.button_play'),
+        onClick: function () {
+            console.log('Transition from start to game');
+            hideStart(MenuBackground.hide(showGame));
+        },
+        show: function () {
+            Start.playButton.element.classList.add('pulse');
+            Start.playButton.element.addEventListener('click', Start.playButton.onClick);
+        },
+        hide: function () {
+            Start.playButton.element.classList.remove('pulse');
+            Start.playButton.element.removeEventListener('click', Start.playButton.onClick);
+        }
+    },
+    settingsButton: {
+        /** @type Element */
+        element: document.querySelector('.button_settings'),
+        onClick: function () {
+            console.log('Transition from start to Settings');
+            hideStart(showSettings);
+        },
+        show: function () {
+            Start.settingsButton.element.classList.add('pulse');
+            Start.settingsButton.element.addEventListener('click', Start.settingsButton.onClick);
+        },
+        hide: function () {
+            Start.settingsButton.element.classList.remove('pulse');
+            Start.settingsButton.element.removeEventListener('click', Start.settingsButton.onClick);
+        }
+    },
+    quitButton: {
+        /** @type Element */
+        element: document.querySelector('.button_quit'),
+        onClick: function () {
+            console.log('Quit the game');
+        },
+        show: function () {
+            Start.quitButton.element.classList.add('pulse');
+            Start.quitButton.element.addEventListener('click', Start.quitButton.onClick);
+        },
+        hide: function () {
+            Start.quitButton.element.classList.remove('pulse');
+            Start.quitButton.element.removeEventListener('click', Start.quitButton.onClick);
+        }
+    }
+};
+
+const Settings = {
+    scene: {
+        /** @type Element */
+        element: document.querySelector('#settings'),
+        show: function () {
+            Settings.scene.element.classList.remove('hidden');
+            Settings.scene.element.classList.remove('fade_out');
+            Settings.scene.element.classList.add('fade_in');
+        },
+        hide: function (next) {
+            Settings.scene.element.classList.remove('fade_in');
+            Settings.scene.element.classList.add('fade_out');
+            Settings.scene.element.addEventListener('animationend', function _listener() {
+                Settings.scene.element.classList.add('hidden');
+                Settings.scene.element.removeEventListener('animationend', _listener);
+                next && next();
+            });
+        }
+    },
+    musicButton: {
+        /** @type Element */
+        element: document.querySelector('.button_music'),
+        onClick: function () {
+            console.log('Toggle musicButton');
+            Music.toggle();
+            Settings.musicButton.update();
+        },
+        update: function () {
+            if (Music.enabled) {
+                Settings.musicButton.element.classList.add("unmuted");
+                Settings.musicButton.element.classList.remove("muted");
+            } else {
+                Settings.musicButton.element.classList.remove("unmuted");
+                Settings.musicButton.element.classList.add("muted");
+            }
+        },
+        show: function () {
+            Settings.musicButton.update();
+            Settings.musicButton.element.classList.add('pulse');
+            Settings.musicButton.element.addEventListener('click', Settings.musicButton.onClick);
+        },
+        hide: function () {
+            Settings.musicButton.element.classList.remove('pulse');
+            Settings.musicButton.element.removeEventListener('click', Settings.musicButton.onClick);
+        }
+    },
+    effectsButton: {
+        /** @type Element */
+        element: document.querySelector('.button_effects'),
+        onClick: function () {
+            console.log('Toggle effectsButton');
+            Effects.toggle();
+            Settings.effectsButton.update();
+        },
+        update: function () {
+            if (Effects.enabled) {
+                Settings.effectsButton.element.classList.add("unmuted");
+                Settings.effectsButton.element.classList.remove("muted");
+            } else {
+                Settings.effectsButton.element.classList.remove("unmuted");
+                Settings.effectsButton.element.classList.add("muted");
+            }
+        },
+        show: function () {
+            Settings.effectsButton.update();
+            Settings.effectsButton.element.classList.add('pulse');
+            Settings.effectsButton.element.addEventListener('click', Settings.effectsButton.onClick);
+        },
+        hide: function () {
+            Settings.effectsButton.element.classList.remove('pulse');
+            Settings.effectsButton.element.removeEventListener('click', Settings.effectsButton.onClick);
+        }
+    },
+    backButton: {
+        /** @type Element */
+        element: document.querySelector('.button_back'),
+        onClick: function () {
+            console.log('Transition from settingsButton to start');
+            hideSettings(showStart);
+        },
+        show: function () {
+            Settings.backButton.element.classList.add('pulse');
+            Settings.backButton.element.addEventListener('click', Settings.backButton.onClick);
+        },
+        hide: function () {
+            Settings.backButton.element.classList.remove('pulse');
+            Settings.backButton.element.removeEventListener('click', Settings.backButton.onClick);
+        }
+    }
+};
+
+const Game = {
+    scene: {
+        /** @type Element */
+        element: document.querySelector('#game'),
+        show: function () {
+            Game.scene.element.classList.remove('hidden');
+            Game.scene.element.classList.remove('fade_out');
+            Game.scene.element.classList.add('fade_in');
+        },
+        hide: function (next) {
+            Game.scene.element.classList.remove('fade_in');
+            Game.scene.element.classList.add('fade_out');
+            Game.scene.element.addEventListener('animationend', function _listener() {
+                Game.scene.element.classList.add('hidden');
+                Game.scene.element.removeEventListener('animationend', _listener);
+                next && next();
+            });
+        }
+    }
+};
+
+//////////////////////////////////
+// Start scene
+
 function showStart() {
-    console.log("showStart");
-    document.querySelector("#start").classList.remove("hidden");
-    document.querySelector("#start").classList.remove("fade-out");
-    document.querySelector("#start").classList.add("fade-in");
-    document.querySelector(".button_play").addEventListener("click", hideStart);
-    document.querySelector(".button_settings").addEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").addEventListener("click", quitGame);
+    console.log('showStart');
+    Start.scene.show();
+    Start.playButton.show();
+    Start.settingsButton.show();
+    Start.quitButton.show();
 }
 
-
-//START GAME
-
-function hideStart() {
-    console.log("hideStart");
-
-    document.querySelector(".button_play").removeEventListener("click", hideStart);
-    document.querySelector(".button_settings").removeEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").removeEventListener("click", quitGame);
-
-    document.querySelector(".button_play").classList.remove("pulse");
-    document.querySelector("#start").classList.add("fade_out");
-    document.querySelector("#menu_background").classList.add("fade_out");
-    document.querySelector("#start").addEventListener("animationend", startGame);
+function hideStart(next) {
+    console.log('hideStart');
+    Start.playButton.hide();
+    Start.settingsButton.hide();
+    Start.quitButton.hide();
+    Start.scene.hide(next);
 }
 
-function startGame() {
-    console.log("startGame");
-    document.querySelector("#start").removeEventListener("animationend", startGame);
-    document.querySelector("#start").classList.add("hidden");
-    document.querySelector("#menu_background").classList.add("hidden");
-
-    document.querySelector("#game").classList.remove("hidden");
-    document.querySelector("#game").classList.add("fade_in");
-}
-
-//QUIT
-
-function quitGame() {
-    console.log("quitGame");
-    document.querySelector(".button_play").removeEventListener("click", hideStart);
-    document.querySelector(".button_settings").removeEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").removeEventListener("click", quitGame);
-
-    document.querySelector(".button_quit").classList.remove("pulse");
-    document.querySelector("#start").classList.add("fade_out");
-    document.querySelector("#menu_background").classList.add("fade_out");
-}
-
-
-//SETTINGS SCREEN
-
-function hideStartButtons() {
-    console.log("hideStartButtons");
-    document.querySelector(".button_play").removeEventListener("click", hideStart);
-    document.querySelector(".button_settings").removeEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").removeEventListener("click", hideStart);
-
-    document.querySelector(".button_settings").classList.remove("pulse");
-    document.querySelector("#start").classList.add("fade_out");
-    document.querySelector("#start").addEventListener("animationend", showSettings);
-}
+//////////////////////////////////
+// Settings scene
 
 function showSettings() {
-    console.log("showSettings");
-    document.querySelector("#start").removeEventListener("animationend", showSettings);
-    document.querySelector("#settings").classList.remove("hidden");
-    document.querySelector("#settings").classList.add("fade_in");
-    document.querySelector(".button_back").addEventListener("click", hideSettings);
+    console.log('showSettings');
+    Settings.scene.show();
+    Settings.musicButton.show();
+    Settings.effectsButton.show();
+    Settings.backButton.show();
 }
 
-
-//BACK TO TITLE
-
-function hideSettings() {
-    console.log("hideSettings");
-    document.querySelector(".button_back").removeEventListener("click", hideSettings);
-    document.querySelector(".button_back").classList.remove("pulse");
-    document.querySelector("#settings").classList.remove("fade_in");
-
-    document.querySelector("#settings").classList.add("fade_out");
-    document.querySelector("#settings").addEventListener("animationend", showStartButtons);
+function hideSettings(next) {
+    console.log('hideSettings');
+    Settings.musicButton.hide();
+    Settings.effectsButton.hide();
+    Settings.backButton.hide();
+    Settings.scene.hide(next);
 }
 
-function showStartButtons() {
-    console.log("showStartButtons");
-    document.querySelector("#settings").removeEventListener("animationend", showStartButtons);
-    document.querySelector("#start").classList.remove("hidden");
-    document.querySelector("#start").classList.add("fade_in");
-    document.querySelector(".button_settings").classList.add("pulse");
-    document.querySelector(".button_play").addEventListener("click", hideStart);
-    document.querySelector(".button_settings").addEventListener("click", hideStartButtons);
-    document.querySelector(".button_quit").addEventListener("click", quitGame);
+//////////////////////////////////
+// Game scene
+
+function showGame() {
+    console.log('showGame');
+    Game.scene.show();
+}
+
+function hideGame(next) {
+    console.log('hideGame');
+    Game.scene.hide(next);
 }
