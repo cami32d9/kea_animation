@@ -276,9 +276,48 @@ function hideSettings(next) {
 function showGame() {
     console.log('showGame');
     Game.scene.show();
+    document.querySelector(".mouse").addEventListener("click", clickMouse);
+    document.querySelector(".carrot").addEventListener("click", clickPositive);
+    document.querySelector(".lollipop").addEventListener("click", clickPositive);
 }
 
-function hideGame(next) {
-    console.log('hideGame');
-    Game.scene.hide(next);
+
+/////////////////////////////////
+// RANDOM STUFF AND ALL
+
+
+let lives = 3;
+
+function clickMouse() {
+    lives--;
+    console.log("Lives:" + lives);
+    let currentEnergy = "#energy_" + lives;
+    document.querySelector(currentEnergy).classList.add("fade_out");
+    gameStatus();
+}
+
+let points = 0;
+
+function clickPositive() {
+    console.log("clickPositive");
+    points++;
+    console.log("Points:" + points);
+    document.querySelector("#points").innerHTML = points;
+    gameStatus();
+}
+
+
+
+
+function gameStatus() {
+    console.log("gameStatus");
+    if (lives == 0) {
+        document.querySelector("#gameover").classList.remove("hidden");
+        document.querySelector("#gameover").classList.add("fade_in");
+    } else if (points == 10) {
+        document.querySelector("#levelcomplete").classList.remove("hidden");
+        document.querySelector("#levelcomplete").classList.add("fade_in");
+    }
+
+
 }
