@@ -18,19 +18,11 @@
         <div id="game" class="hidden">
             <img id="game_background" class="full-screen" src="elements/background_game.svg" alt="Game background">
             <div id="game_elements">
-                <div id="elephant">
-                    <img src="elements/e_asleep_happy.svg" alt="Elephant">
-                </div>
-                <div class="fade-in-clouds">
-                    <div id="dream_1" class="dream carrot">
-                        <img src="elements/carrot.svg" alt="Carrot">
-                    </div>
-                    <div id="dream_2" class="dream mouse">
-                        <img src="elements/mouse.svg" alt="Mouse">
-                    </div>
-                    <div id="dream_3" class="dream lollipop">
-                        <img src="elements/lollipop.svg" alt="Lollipop">
-                    </div>
+                <div id="elephant" class="e_asleep_neutral"></div>
+                <div class="dreams">
+                    <div id="dream_1" class="dream carrot"></div>
+                    <div id="dream_2" class="dream mouse"></div>
+                    <div id="dream_3" class="dream lollipop"></div>
                 </div>
 
                 <div id="thought_1">
@@ -45,52 +37,41 @@
                 <div id="thought_4">
                     <img src="elements/cloud.svg" alt="Cloud" style="position: absolute; width: 1%; left: 65%; top: 49%;">
                 </div>
-
-                <div class="hidden">
-                    <img src="elements/e_asleep_neutral.svg" alt="Elephant">
-                    <img src="elements/e_asleep_neutral.svg" alt="Elephant">
-                    <img src="elements/e_asleep_unhappy.svg" alt="Elephant">
-                    <img src="elements/e_awake_happy.svg" alt="Elephant">
-                    <img src="elements/e_awake_unhappy.svg" alt="Elephant">
-                    <div id="sun" class="element">
-                        <img src="elements/sun.svg" alt="Sun">
-                    </div>
-                </div>
             </div>
             <div id="game_ui">
-                <div id="energy_0" class="energy element">
+                <div id="energy_0" class="energy">
                     <img src="elements/mouse.svg" alt="Life">
                 </div>
-                <div id="energy_1" class="energy element">
+                <div id="energy_1" class="energy">
                     <img src="elements/mouse.svg" alt="Life">
                 </div>
-                <div id="energy_2" class="energy element">
+                <div id="energy_2" class="energy">
                     <img src="elements/mouse.svg" alt="Life">
                 </div>
-                <div id="points_bar" class="element">
+                <div id="points_bar">
                     <img src="elements/points.svg" alt="Points">
-                    <div id="points" class="element">
+                    <div id="points">
                         0
                     </div>
                 </div>
-                <div id="time" class="element">
+                <div id="time">
                     <img src="elements/timer.svg" alt="Timer">
                 </div>
             </div>
         </div>
         <div id="start" class="hidden">
-            <div class="button button_play element pulse">
+            <div class="button button_play pulse">
                 <img src="elements/button_play.svg" alt="Play">
             </div>
-            <div class="button button_settings element pulse">
+            <div class="button button_settings pulse">
                 <img src="elements/button_settings.svg" alt="Settings">
             </div>
-            <div class="button button_quit element pulse">
+            <div class="button button_quit pulse">
                 <img src="elements/button_quit.svg" alt="Quit">
             </div>
         </div>
         <div id="settings" class="hidden">
-            <div class="button button_music element pulse">
+            <div class="button button_music pulse">
                 <img src="elements/button_music.svg" alt="Music">
                 <div class="icon muted">
                     <img src="elements/muted.svg" alt="Muted">
@@ -99,7 +80,7 @@
                     <img src="elements/unmuted.svg" alt="Unmuted">
                 </div>
             </div>
-            <div class="button button_effects element pulse">
+            <div class="button button_effects pulse">
                 <img src="elements/button_effects.svg" alt="Effects">
                 <div class="icon muted">
                     <img src="elements/muted.svg" alt="Muted">
@@ -108,7 +89,7 @@
                     <img src="elements/unmuted.svg" alt="Unmuted">
                 </div>
             </div>
-            <div class="button button_back element pulse">
+            <div class="button button_back pulse">
                 <img src="elements/button_back.svg" alt="Back">
             </div>
             <div class="muted">
@@ -122,22 +103,22 @@
             <div id="gameover_background">
                 <img src="elements/background_game_over.svg" alt="Game over">
             </div>
-            <div class="button button_play_again">
+            <div class="button gameover_button_play_again">
                 <img src="elements/button_play_again.svg" alt="Play again">
             </div>
-            <div class="button button_back">
-                <img src="elements/button_back.svg" alt="Back">
+            <div class="button gameover_button_quit">
+                <img src="elements/button_quit.svg" alt="Back">
             </div>
         </div>
         <div id="levelcomplete" class="hidden">
             <div id="levelcomplete_background">
                 <img src="elements/background_level_complete.svg" alt="Level complete">
             </div>
-            <div class="button button_play_again">
+            <div class="button levelcomplete_button_play_again">
                 <img src="elements/button_play_again.svg" alt="Play again">
             </div>
-            <div class="button button_back">
-                <img src="elements/button_back.svg" alt="Back">
+            <div class="button levelcomplete_button_quit">
+                <img src="elements/button_quit.svg" alt="Back">
             </div>
         </div>
     </div>
