@@ -10,7 +10,43 @@ let points = 0;
 
 
 //////////////////////////////////
-// CONSTANTS
+// Const
+
+const Timer = {
+    _timer: null,
+    _callback: null,
+    seconds: 0,
+    start: function (duration, tick, done) {
+        console.log('Starting timer: ' + duration);
+        Timer.seconds = duration;
+        Timer._callback = done || null;
+        Timer._timer = setInterval(function () {
+            //console.log(Timer.seconds + (Timer.seconds % 2 ? ' Tick' : ' Tock'));
+            tick && tick();
+            Timer.seconds--;
+            if (Timer.seconds < 0) {
+                console.log('Timer done');
+                // Store callback as a varaible because we need to call it after stopping the timer
+                let callback = Timer._callback;
+                Timer.stop();
+                callback && callback();
+            }
+        }, 1000);
+    },
+    stop: function () {
+        console.log('Stopping timer');
+        clearInterval(Timer._timer);
+        Timer._timer = null;
+        Timer._callback = null;
+    },
+    prettyTime: function (sec) {
+        // Show seconds as mm:ss
+        // @see https://stackoverflow.com/a/26206645
+        const minutes = '0' + Math.floor(sec / 60);
+        const seconds = '0' + (sec - minutes * 60);
+        return minutes.substr(-2) + ':' + seconds.substr(-2);
+    }
+};
 
 const Music = {
     enabled: true,
@@ -65,6 +101,7 @@ const Start = {
             Start.scene.element.classList.remove('hidden');
             Start.scene.element.classList.remove('fade_out');
             Start.scene.element.classList.add('fade_in');
+            lives = 3;
         },
         hide: function (next) {
             Start.scene.element.classList.remove('fade_in');
@@ -89,6 +126,7 @@ const Start = {
             Start.playButton.element.addEventListener('click', Start.playButton.onClick);
         },
         hide: function () {
+            console.log("Hide Play Button");
             Start.playButton.element.classList.remove('pulse');
             Start.playButton.element.removeEventListener('click', Start.playButton.onClick);
         }
@@ -222,10 +260,26 @@ const Game = {
     scene: {
         /** @type Element */
         element: document.querySelector('#game'),
+        time: 30,
         show: function () {
+            document.querySelector('#timer').textContent = Timer.prettyTime(Game.scene.time);
             Game.scene.element.classList.remove('hidden');
             Game.scene.element.classList.remove('fade_out');
             Game.scene.element.classList.add('fade_in');
+            document.querySelector(".dreams").addEventListener('animationend', function _listener() {
+                Timer.start(
+                    Game.scene.time,
+                    function () {
+                        console.log('Tick: ' + Timer.prettyTime(Timer.seconds));
+                        document.querySelector('#timer').textContent = Timer.prettyTime(Timer.seconds);
+                    },
+                    function () {
+                        console.log('I\'m done!!!');
+                        levelComplete();
+                    }
+                );
+                document.querySelector(".dreams").removeEventListener('animationend', _listener);
+            });
         },
         hide: function (next) {
             Game.scene.element.classList.remove('fade_in');
@@ -293,6 +347,60 @@ const Game = {
             Game.lollipop.element.removeEventListener("click", Game.lollipop.onClick);
             Game.lollipop.element.classList.remove("pointer");
         }
+    },
+    energy_0: {
+        /** @type Element */
+        element: document.querySelector('#energy_0'),
+        show: function () {
+            Game.energy_0.element.classList.remove("hidden");
+            Game.energy_0.element.classList.remove("fade_out");
+            Game.energy_0.element.classList.add("fade_in");
+            Game.energy_0.element.addEventListener("animationend", function _listener () {
+                Game.energy_0.element.classList.remove("fade_in");
+                Game.energy_0.element.removeEventListener("animationend", _listener);
+            });
+        },
+        hide: function () {
+            console.log("hide energy_0");
+            Game.energy_0.element.classList.remove("fade_in");
+            Game.energy_0.element.classList.add("hidden");
+        }
+    },
+    energy_1: {
+        /** @type Element */
+        element: document.querySelector('#energy_1'),
+        show: function () {
+            Game.energy_1.element.classList.remove("hidden");
+            Game.energy_1.element.classList.remove("fade_out");
+            Game.energy_1.element.classList.add("fade_in");
+            Game.energy_1.element.addEventListener("animationend", function _listener () {
+                Game.energy_1.element.classList.remove("fade_in");
+                Game.energy_1.element.removeEventListener("animationend", _listener);
+            });
+        },
+        hide: function () {
+            console.log("hide energy_0");
+            Game.energy_1.element.classList.remove("fade_in");
+            Game.energy_1.element.classList.add("hidden");
+        }
+    },
+    energy_2: {
+        /** @type Element */
+        element: document.querySelector('#energy_2'),
+        show: function () {
+            Game.energy_2.element.classList.remove("hidden");
+            Game.energy_2.element.classList.remove("fade_out");
+            Game.energy_2.element.classList.add("fade_in");
+            Game.energy_2.element.addEventListener("animationend", function _listener () {
+                Game.energy_2.element.classList.remove("fade_in");
+                Game.energy_2.element.removeEventListener("animationend", _listener);
+            });
+        },
+        hide: function () {
+            console.log("hide energy_0");
+            Game.energy_2.element.classList.remove("fade_in");
+            Game.energy_2.element.classList.add("hidden");
+        }
     }
 };
 
@@ -330,6 +438,23 @@ const LevelComplete = {
             LevelComplete.quitButton.element.classList.remove('pulse');
             LevelComplete.quitButton.element.removeEventListener('click', LevelComplete.quitButton.onClick);
         }
+    },
+    playAgainButton: {
+        /** @type Element */
+        element: document.querySelector('.levelcomplete_button_play_again'),
+        onClick: function () {
+            console.log('Quit the game');
+            hideLevelComplete(showStart);
+            MenuBackground.show();
+        },
+        show: function () {
+            LevelComplete.playAgainButton.element.classList.add('pulse');
+            LevelComplete.playAgainButton.element.addEventListener('click', LevelComplete.playAgainButton.onClick);
+        },
+        hide: function () {
+            LevelComplete.playAgainButton.element.classList.remove('pulse');
+            LevelComplete.playAgainButton.element.removeEventListener('click', LevelComplete.playAgainButton.onClick);
+        }
     }
 };
 
@@ -346,8 +471,8 @@ const GameOver = {
             GameOver.scene.element.classList.remove('fade_in');
             GameOver.scene.element.classList.add('fade_out');
             GameOver.scene.element.addEventListener('animationend', function _listener() {
-                Start.scene.element.classList.add('hidden');
-                Start.scene.element.removeEventListener('animationend', _listener);
+                GameOver.scene.element.classList.add('hidden');
+                GameOver.scene.element.removeEventListener('animationend', _listener);
                 next && next();
             });
         }
@@ -374,6 +499,7 @@ const GameOver = {
         onClick: function () {
             console.log('Quit the game');
             hideGameOver(showStart);
+            MenuBackground.show();
         },
         show: function () {
             GameOver.playAgainButton.element.classList.add('pulse');
@@ -433,6 +559,9 @@ function showGame() {
     Game.mouse.show();
     Game.carrot.show();
     Game.lollipop.show();
+    Game.energy_0.show();
+    Game.energy_1.show();
+    Game.energy_2.show();
 }
 
 //////////////////////////////////
@@ -440,9 +569,17 @@ function showGame() {
 
 function gameOver() {
     console.log("gameOver");
+    Game.scene.hide();
+    Game.energy_0.hide();
+    Game.energy_1.hide();
+    Game.energy_2.hide();
+    Game.carrot.hide();
+    Game.mouse.hide();
+    Game.lollipop.hide();
     GameOver.scene.show();
     GameOver.quitButton.show();
     GameOver.playAgainButton.show();
+    Timer.stop();
 }
 
 function hideGameOver(next) {
@@ -456,6 +593,14 @@ function levelComplete() {
     console.log("levelComplete");
     LevelComplete.scene.show();
     LevelComplete.quitButton.show();
+    Timer.stop();
+}
+
+function hideLevelComplete(next) {
+    console.log("hideGameOver");
+    LevelComplete.playAgainButton.hide();
+    LevelComplete.quitButton.hide();
+    LevelComplete.scene.hide(next);
 }
 
 //////////////////////////////////
@@ -479,21 +624,13 @@ function clickMouse() {
     console.log("Lives:" + lives);
     let currentEnergy = "#energy_" + lives;
     document.querySelector(currentEnergy).classList.add("fade_out");
-    gameStatus();
+    if (lives === 0) {
+        gameOver();
+    }
 }
 
 
 function clickPositive() {
     points++;
     document.querySelector("#points").innerHTML = points;
-    gameStatus();
-}
-
-
-function gameStatus() {
-    if (lives == 0) {
-        gameOver();
-    } else if (points == 10) {
-        levelComplete();
-    }
 }

@@ -273,6 +273,14 @@ img {
 
 /* ------------------------- UI ------------------------- */
 
+#game_ui {
+    animation-name: fade_pulse;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+    animation-direction: alternate;
+}
+
 /* POINTS */
 
 #points {
@@ -297,7 +305,7 @@ img {
 
 /* TIMER */
 
-#time {
+#time_bar {
     position: absolute;
     top: 2%;
     width: 13%;
@@ -312,11 +320,6 @@ img {
     position: absolute;
     top: 2%;
     width: 7%;
-    animation-name: fade_pulse;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;
-    animation-fill-mode: forwards;
-    animation-direction: alternate;
 }
 
 #energy_0 {
@@ -533,4 +536,15 @@ img {
 
 .pointer {
     cursor: pointer;
+}
+
+#timer {
+    position: absolute;
+    top: 20%;
+    left: 35%;
+    opacity: 0.9;
+    font-weight: bold;
+    color: #3f445d;
+    display: inline-block;
+    width: 100%;
 }
