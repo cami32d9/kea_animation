@@ -285,13 +285,14 @@ img {
 
 #points {
     position: absolute;
-    top: 20%;
-    left: 35%;
+    top: 18%;
+    left: 0;
     opacity: 0.9;
     font-weight: bold;
     color: #3f445d;
     display: inline-block;
-    width: 100%;
+    width: 48%;
+    text-align: right;
 }
 
 #points_bar {
@@ -384,6 +385,14 @@ img {
 }
 
 .gameover_button_play_again {
+    position: absolute;
+    width: 32%;
+    top: 70%;
+    left: 65%;
+    animation-duration: 2s;
+}
+
+.levelcomplete_button_play_again {
     position: absolute;
     width: 32%;
     top: 70%;
@@ -540,11 +549,12 @@ img {
 
 #timer {
     position: absolute;
-    top: 20%;
-    left: 35%;
+    top: 18%;
+    left: 0;
     opacity: 0.9;
     font-weight: bold;
     color: #3f445d;
     display: inline-block;
     width: 100%;
+    text-align: center;
 }

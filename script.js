@@ -3,6 +3,7 @@ window.addEventListener("load", sidenVises);
 function sidenVises() {
     console.log("sidenVises");
     showStart();
+    Music.playSidenVises();
 }
 
 let lives = 3;
@@ -54,11 +55,20 @@ const Music = {
         if (Music.enabled) {
             Music.enabled = false;
             console.log("Music is disabled");
+            document.querySelector("#lullaby").pause();
         } else {
             Music.enabled = true;
             console.log("Music is enabled");
+            document.querySelector("#lullaby").play();
+            document.querySelector("#lullaby").volume=0.3;
         }
-    }
+    },
+    playSidenVises: function () {
+        if (Effects.enabled) {
+            document.querySelector("#lullaby").play();
+            document.querySelector("#lullaby").volume=0.3;
+        }
+    },
 };
 
 const Effects = {
@@ -70,6 +80,41 @@ const Effects = {
         } else {
             Effects.enabled = true;
             console.log("Effects is enabled");
+        }
+    },
+    playGameLoaded: function () {
+        if (Effects.enabled) {
+            setTimeout(function () {
+                document.querySelector("#mouse_sound").play();
+            }, 1000);
+        }
+    },
+    playbuttonclick: function () {
+        if (Effects.enabled) {
+            document.querySelector("#button_sound").currentTime = 0;
+            document.querySelector("#button_sound").play();
+        }
+    },
+    playShortTrumpet: function () {
+        if (Effects.enabled) {
+            document.querySelector("#button_sound").currentTime = 0;
+            document.querySelector("#trumpet").play();
+        }
+    },
+    playLongTrumpet: function () {
+        if (Effects.enabled) {
+            document.querySelector("#trumpet_long").play();
+        }
+    },
+    playPositiveClick: function () {
+        if (Effects.enabled) {
+            document.querySelector("#positive_sound").currentTime = 0;
+            document.querySelector("#positive_sound").play();
+        }
+    },
+    playLevelComplete: function () {
+        if (Effects.enabled) {
+            document.querySelector("#levelcomplete_sound").play();
         }
     }
 };
@@ -119,6 +164,7 @@ const Start = {
         onClick: function () {
             console.log('Transition from start to game');
             hideStart(MenuBackground.hide(showGame));
+            Effects.playbuttonclick();
         },
         show: function () {
             console.log("Show Play Button");
@@ -137,6 +183,7 @@ const Start = {
         onClick: function () {
             console.log('Transition from start to Settings');
             hideStart(showSettings);
+            Effects.playbuttonclick();
         },
         show: function () {
             Start.settingsButton.element.classList.add('pulse');
@@ -153,6 +200,7 @@ const Start = {
         onClick: function () {
             console.log('Quit the game');
             quitGame();
+            Effects.playbuttonclick();
         },
         show: function () {
             Start.quitButton.element.classList.add('pulse');
@@ -191,6 +239,7 @@ const Settings = {
             console.log('Toggle musicButton');
             Music.toggle();
             Settings.musicButton.update();
+            Effects.playbuttonclick();
         },
         update: function () {
             if (Music.enabled) {
@@ -218,6 +267,7 @@ const Settings = {
             console.log('Toggle effectsButton');
             Effects.toggle();
             Settings.effectsButton.update();
+            Effects.playbuttonclick();
         },
         update: function () {
             if (Effects.enabled) {
@@ -244,6 +294,7 @@ const Settings = {
         onClick: function () {
             console.log('Transition from settingsButton to start');
             hideSettings(showStart);
+            Effects.playbuttonclick();
         },
         show: function () {
             Settings.backButton.element.classList.add('pulse');
@@ -266,11 +317,13 @@ const Game = {
             Game.scene.element.classList.remove('hidden');
             Game.scene.element.classList.remove('fade_out');
             Game.scene.element.classList.add('fade_in');
+            Effects.playGameLoaded();
+
             document.querySelector(".dreams").addEventListener('animationend', function _listener() {
                 Timer.start(
                     Game.scene.time,
                     function () {
-                        console.log('Tick: ' + Timer.prettyTime(Timer.seconds));
+                        // console.log('Tick: ' + Timer.prettyTime(Timer.seconds));
                         document.querySelector('#timer').textContent = Timer.prettyTime(Timer.seconds);
                     },
                     function () {
@@ -282,6 +335,7 @@ const Game = {
             });
         },
         hide: function (next) {
+            console.log("Hide game");
             Game.scene.element.classList.remove('fade_in');
             Game.scene.element.classList.add('fade_out');
             Game.scene.element.addEventListener('animationend', function _listener() {
@@ -295,7 +349,21 @@ const Game = {
         /** @type Element */
         element: document.querySelector('.mouse'),
         onClick: function () {
-            clickMouse();
+            unhappy_elephant();
+            setTimeout (happy_elephant, 2000, currentTime = 0);
+
+            lives--;
+            console.log("Lives:" + lives);
+            let currentEnergy = "#energy_" + lives;
+            document.querySelector(currentEnergy).classList.add("fade_out");
+            if (lives === 0) {
+                gameOver();
+                Effects.playLongTrumpet();
+            }
+            else if (lives !== 0)
+            {
+                Effects.playShortTrumpet();
+            }
         },
         show: function () {
             document.querySelector(".dreams").addEventListener('animationend', function _listener() {
@@ -346,6 +414,41 @@ const Game = {
             console.log("hideCarrot");
             Game.lollipop.element.removeEventListener("click", Game.lollipop.onClick);
             Game.lollipop.element.classList.remove("pointer");
+        }
+    },
+    sun: {
+        /** @type Element */
+        element: document.querySelector('.sun'),
+        onClick: function () {
+            clickPositive();
+        },
+        show: function () {
+            document.querySelector(".dreams").addEventListener('animationend', function _listener() {
+                Game.sun.element.addEventListener("click", Game.sun.onClick);
+                Game.sun.element.classList.add("pointer");
+                document.querySelector(".dreams").removeEventListener('animationend', _listener);
+            });
+        },
+        hide: function () {
+            console.log("hideCarrot");
+            Game.sun.element.removeEventListener("click", Game.sun.onClick);
+            Game.sun.element.classList.remove("pointer");
+        }
+    },
+    elephant: {
+        /** @type Element */
+        element: document.querySelector('#elephant'),
+        show: function () {
+            Game.elephant.element.classList.remove("e_awake_happy");
+            Game.elephant.element.classList.remove("e_awake_unhappy");
+            Game.elephant.element.classList.remove("e_asleep_unhappy");
+            Game.elephant.element.classList.remove("e_asleep_happy");
+            Game.elephant.element.classList.add("e_asleep_neutral");
+        },
+        hide: function () {
+            console.log("hideCarrot");
+            Game.elephant.element.removeEventListener("click", Game.elephant.onClick);
+            Game.elephant.element.classList.remove("pointer");
         }
     },
     energy_0: {
@@ -412,13 +515,14 @@ const LevelComplete = {
             LevelComplete.scene.element.classList.remove('hidden');
             LevelComplete.scene.element.classList.remove('fade_out');
             LevelComplete.scene.element.classList.add('fade_in');
+            Effects.playLevelComplete();
         },
         hide: function (next) {
             LevelComplete.scene.element.classList.remove('fade_in');
             LevelComplete.scene.element.classList.add('fade_out');
             LevelComplete.scene.element.addEventListener('animationend', function _listener() {
-                Start.scene.element.classList.add('hidden');
-                Start.scene.element.removeEventListener('animationend', _listener);
+                LevelComplete.scene.element.classList.add('hidden');
+                LevelComplete.scene.element.removeEventListener('animationend', _listener);
                 next && next();
             });
         }
@@ -429,6 +533,7 @@ const LevelComplete = {
         onClick: function () {
             console.log('Quit the game');
             quitGame();
+            Effects.playbuttonclick();
         },
         show: function () {
             LevelComplete.quitButton.element.classList.add('pulse');
@@ -446,6 +551,7 @@ const LevelComplete = {
             console.log('Quit the game');
             hideLevelComplete(showStart);
             MenuBackground.show();
+            Effects.playbuttonclick();
         },
         show: function () {
             LevelComplete.playAgainButton.element.classList.add('pulse');
@@ -483,6 +589,7 @@ const GameOver = {
         onClick: function () {
             console.log('Quit the game');
             quitGame();
+            Effects.playbuttonclick();
         },
         show: function () {
             GameOver.quitButton.element.classList.add('pulse');
@@ -500,6 +607,7 @@ const GameOver = {
             console.log('Quit the game');
             hideGameOver(showStart);
             MenuBackground.show();
+            Effects.playbuttonclick();
         },
         show: function () {
             GameOver.playAgainButton.element.classList.add('pulse');
@@ -559,6 +667,7 @@ function showGame() {
     Game.mouse.show();
     Game.carrot.show();
     Game.lollipop.show();
+    Game.elephant.show();
     Game.energy_0.show();
     Game.energy_1.show();
     Game.energy_2.show();
@@ -591,17 +700,26 @@ function hideGameOver(next) {
 
 function levelComplete() {
     console.log("levelComplete");
+    Game.scene.hide();
+    Game.energy_0.hide();
+    Game.energy_1.hide();
+    Game.energy_2.hide();
+    Game.carrot.hide();
+    Game.mouse.hide();
+    Game.lollipop.hide();
     LevelComplete.scene.show();
     LevelComplete.quitButton.show();
+    LevelComplete.playAgainButton.show();
     Timer.stop();
 }
 
 function hideLevelComplete(next) {
-    console.log("hideGameOver");
+    console.log("hideLevelComplete");
     LevelComplete.playAgainButton.hide();
     LevelComplete.quitButton.hide();
     LevelComplete.scene.hide(next);
 }
+
 
 //////////////////////////////////
 // Quit game
@@ -619,18 +737,97 @@ function quitGame() {
 //////////////////////////////////
 // Click functions
 
-function clickMouse() {
-    lives--;
-    console.log("Lives:" + lives);
-    let currentEnergy = "#energy_" + lives;
-    document.querySelector(currentEnergy).classList.add("fade_out");
-    if (lives === 0) {
-        gameOver();
-    }
+
+function unhappy_elephant() {
+    console.log("The elephant cries");
+    document.querySelector("#elephant").classList.remove("e_asleep_neutral");
+    document.querySelector("#elephant").classList.add("e_asleep_unhappy");
 }
 
+function very_happy_elephant() {
+    console.log("The elephant smiles");
+    document.querySelector("#elephant").classList.remove("e_asleep_neutral");
+    document.querySelector("#elephant").classList.add("e_asleep_happy");
+}
+
+function happy_elephant() {
+    console.log("The elephant is happy");
+    document.querySelector("#elephant").classList.remove("e_asleep_unhappy");
+    document.querySelector("#elephant").classList.remove("e_asleep_happy");
+    document.querySelector("#elephant").classList.add("e_asleep_neutral");
+}
 
 function clickPositive() {
     points++;
     document.querySelector("#points").innerHTML = points;
+    very_happy_elephant();
+    setTimeout (happy_elephant, 2000);
+    Effects.playPositiveClick();
 }
+
+
+
+
+//////////////////////////////////////
+
+document.body.setScaledFont = function(f) {
+    var s = document.querySelector("#screen").offsetWidth;
+    console.log(s);
+    var fs = s * f;
+    this.style.fontSize = fs + '%';
+    return this
+};
+
+
+
+document.body.setScaledFont(0.12);
+window.onresize = function() {
+    document.body.setScaledFont(0.12);
+};
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////
+
+
+
+
+
+// let good = ['.carrot', '.lollipop', '.sun'];
+// let bad = ['.mouse'];
+//
+// function shuffleArray(array) {
+//     for (var i = array.length - 1; i > 0; i--) {
+//         var j = Math.floor(Math.random() * (i + 1));
+//         var temp = array[i];
+//         array[i] = array[j];
+//         array[j] = temp;
+//     }
+// }
+//
+// function randomItem(array) {
+//     return array[Math.floor(Math.random() * array.length)];
+// }
+//
+// function getSet() {
+//     let set = [
+//         randomItem(good),
+//         randomItem(good),
+//         randomItem(bad),
+//     ];
+//
+//     shuffleArray(set);
+//
+//     return set;
+// }
+//
+// for (let i = 0; i < 10; i++) {
+//     document.write(getSet() + "\n<br>");
+// }
