@@ -6,6 +6,6 @@ Randomize clouds
 
 if elephant = happy/unhappy, reset setTimeout
 
-Add last two elephants
+Reset points
 
-Add points at end screens
+Add points at levelcomplete

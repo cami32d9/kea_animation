@@ -1,13 +1,44 @@
 window.addEventListener("load", sidenVises);
 
+
+
+//////////////////////////////////////
+// Utilities
+
+function randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+//////////////////////////////////////
+// Font scaling
+
+
+document.body.setScaledFont = function(f) {
+    var s = document.querySelector("#screen").offsetWidth;
+    console.log(s);
+    var fs = s * f;
+    this.style.fontSize = fs + '%';
+    return this
+};
+
+document.body.setScaledFont(0.12);
+window.onresize = function() {
+    document.body.setScaledFont(0.12);
+};
+
+
 function sidenVises() {
-    console.log("sidenVises");
     showStart();
     Music.playSidenVises();
 }
 
-let lives = 3;
+
 let points = 0;
+let lives = 3;
 
 
 //////////////////////////////////
@@ -26,7 +57,6 @@ const Timer = {
             tick && tick();
             Timer.seconds--;
             if (Timer.seconds < 0) {
-                console.log('Timer done');
                 // Store callback as a varaible because we need to call it after stopping the timer
                 let callback = Timer._callback;
                 Timer.stop();
@@ -35,7 +65,6 @@ const Timer = {
         }, 1000);
     },
     stop: function () {
-        console.log('Stopping timer');
         clearInterval(Timer._timer);
         Timer._timer = null;
         Timer._callback = null;
@@ -115,6 +144,7 @@ const Effects = {
     playLevelComplete: function () {
         if (Effects.enabled) {
             document.querySelector("#levelcomplete_sound").play();
+            Game.elephant.e_awake_happy();
         }
     }
 };
@@ -146,7 +176,6 @@ const Start = {
             Start.scene.element.classList.remove('hidden');
             Start.scene.element.classList.remove('fade_out');
             Start.scene.element.classList.add('fade_in');
-            lives = 3;
         },
         hide: function (next) {
             Start.scene.element.classList.remove('fade_in');
@@ -162,17 +191,14 @@ const Start = {
         /** @type Element */
         element: document.querySelector('.button_play'),
         onClick: function () {
-            console.log('Transition from start to game');
             hideStart(MenuBackground.hide(showGame));
             Effects.playbuttonclick();
         },
         show: function () {
-            console.log("Show Play Button");
             Start.playButton.element.classList.add('pulse');
             Start.playButton.element.addEventListener('click', Start.playButton.onClick);
         },
         hide: function () {
-            console.log("Hide Play Button");
             Start.playButton.element.classList.remove('pulse');
             Start.playButton.element.removeEventListener('click', Start.playButton.onClick);
         }
@@ -181,7 +207,6 @@ const Start = {
         /** @type Element */
         element: document.querySelector('.button_settings'),
         onClick: function () {
-            console.log('Transition from start to Settings');
             hideStart(showSettings);
             Effects.playbuttonclick();
         },
@@ -198,7 +223,6 @@ const Start = {
         /** @type Element */
         element: document.querySelector('.button_quit'),
         onClick: function () {
-            console.log('Quit the game');
             quitGame();
             Effects.playbuttonclick();
         },
@@ -292,7 +316,6 @@ const Settings = {
         /** @type Element */
         element: document.querySelector('.button_back'),
         onClick: function () {
-            console.log('Transition from settingsButton to start');
             hideSettings(showStart);
             Effects.playbuttonclick();
         },
@@ -313,13 +336,17 @@ const Game = {
         element: document.querySelector('#game'),
         time: 30,
         show: function () {
+            lives = 3;
+            points = 0;
+            document.querySelector(".points").innerHTML = points;
             document.querySelector('#timer').textContent = Timer.prettyTime(Game.scene.time);
             Game.scene.element.classList.remove('hidden');
             Game.scene.element.classList.remove('fade_out');
             Game.scene.element.classList.add('fade_in');
             Effects.playGameLoaded();
-
+            Dreams.shuffle();
             document.querySelector(".dreams").addEventListener('animationend', function _listener() {
+                Dreams.enable();
                 Timer.start(
                     Game.scene.time,
                     function () {
@@ -327,7 +354,6 @@ const Game = {
                         document.querySelector('#timer').textContent = Timer.prettyTime(Timer.seconds);
                     },
                     function () {
-                        console.log('I\'m done!!!');
                         levelComplete();
                     }
                 );
@@ -335,23 +361,16 @@ const Game = {
             });
         },
         hide: function (next) {
-            console.log("Hide game");
             Game.scene.element.classList.remove('fade_in');
-            Game.scene.element.classList.add('fade_out');
-            Game.scene.element.addEventListener('animationend', function _listener() {
-                Game.scene.element.classList.add('hidden');
-                Game.scene.element.removeEventListener('animationend', _listener);
-                next && next();
-            });
+            Game.scene.element.classList.add('fade_out_slow');
+            next && next();
         }
     },
     mouse: {
         /** @type Element */
         element: document.querySelector('.mouse'),
         onClick: function () {
-            unhappy_elephant();
-            setTimeout (happy_elephant, 2000, currentTime = 0);
-
+            clearElephantTimer();
             lives--;
             console.log("Lives:" + lives);
             let currentEnergy = "#energy_" + lives;
@@ -359,81 +378,15 @@ const Game = {
             if (lives === 0) {
                 gameOver();
                 Effects.playLongTrumpet();
+                Game.elephant.e_awake_unhappy();
             }
             else if (lives !== 0)
             {
                 Effects.playShortTrumpet();
+                Game.elephant.e_asleep_unhappy();
+                setTimeout (Game.elephant.e_asleep_neutral, 2000);
             }
         },
-        show: function () {
-            document.querySelector(".dreams").addEventListener('animationend', function _listener() {
-                Game.mouse.element.addEventListener("click", Game.mouse.onClick);
-                Game.mouse.element.classList.add("pointer");
-                document.querySelector(".dreams").removeEventListener('animationend', _listener);
-            });
-        },
-        hide: function () {
-            console.log("hideMouse");
-            Game.mouse.element.removeEventListener("click", Game.mouse.onClick);
-            Game.mouse.element.classList.remove("pointer");
-        }
-    },
-    carrot: {
-        /** @type Element */
-        element: document.querySelector('.carrot'),
-        onClick: function () {
-            clickPositive();
-        },
-        show: function () {
-            document.querySelector(".dreams").addEventListener('animationend', function _listener() {
-                Game.carrot.element.addEventListener("click", Game.carrot.onClick);
-                Game.carrot.element.classList.add("pointer");
-                document.querySelector(".dreams").removeEventListener('animationend', _listener);
-            });
-        },
-        hide: function () {
-            console.log("hideCarrot");
-            Game.carrot.element.removeEventListener("click", Game.carrot.onClick);
-            Game.carrot.element.classList.remove("pointer");
-        }
-    },
-    lollipop: {
-        /** @type Element */
-        element: document.querySelector('.lollipop'),
-        onClick: function () {
-            clickPositive();
-        },
-        show: function () {
-            document.querySelector(".dreams").addEventListener('animationend', function _listener() {
-                Game.lollipop.element.addEventListener("click", Game.lollipop.onClick);
-                Game.lollipop.element.classList.add("pointer");
-                document.querySelector(".dreams").removeEventListener('animationend', _listener);
-            });
-        },
-        hide: function () {
-            console.log("hideCarrot");
-            Game.lollipop.element.removeEventListener("click", Game.lollipop.onClick);
-            Game.lollipop.element.classList.remove("pointer");
-        }
-    },
-    sun: {
-        /** @type Element */
-        element: document.querySelector('.sun'),
-        onClick: function () {
-            clickPositive();
-        },
-        show: function () {
-            document.querySelector(".dreams").addEventListener('animationend', function _listener() {
-                Game.sun.element.addEventListener("click", Game.sun.onClick);
-                Game.sun.element.classList.add("pointer");
-                document.querySelector(".dreams").removeEventListener('animationend', _listener);
-            });
-        },
-        hide: function () {
-            console.log("hideCarrot");
-            Game.sun.element.removeEventListener("click", Game.sun.onClick);
-            Game.sun.element.classList.remove("pointer");
-        }
     },
     elephant: {
         /** @type Element */
@@ -446,9 +399,55 @@ const Game = {
             Game.elephant.element.classList.add("e_asleep_neutral");
         },
         hide: function () {
-            console.log("hideCarrot");
             Game.elephant.element.removeEventListener("click", Game.elephant.onClick);
             Game.elephant.element.classList.remove("pointer");
+        },
+        e_asleep_neutral: function () {
+            Game.elephant.element.classList.remove("e_asleep_unhappy");
+            Game.elephant.element.classList.remove("e_asleep_happy");
+            Game.elephant.element.classList.remove("e_awake_happy");
+            Game.elephant.element.classList.remove("e_awake_unhappy");
+            Game.elephant.element.classList.add("e_asleep_neutral");
+        },
+        e_asleep_happy: function () {
+            Game.elephant.element.classList.remove("e_asleep_unhappy");
+            Game.elephant.element.classList.remove("e_awake_happy");
+            Game.elephant.element.classList.remove("e_awake_unhappy");
+            Game.elephant.element.classList.remove("e_asleep_neutral");
+            Game.elephant.element.classList.add("e_asleep_happy");
+        },
+        e_asleep_unhappy: function () {
+            Game.elephant.element.classList.remove("e_awake_happy");
+            Game.elephant.element.classList.remove("e_awake_unhappy");
+            Game.elephant.element.classList.remove("e_asleep_neutral");
+            Game.elephant.element.classList.remove("e_asleep_happy");
+            Game.elephant.element.classList.add("e_asleep_unhappy");
+        },
+        e_awake_happy: function () {
+            Game.elephant.element.classList.remove("e_awake_unhappy");
+            Game.elephant.element.classList.remove("e_asleep_neutral");
+            Game.elephant.element.classList.remove("e_asleep_happy");
+            Game.elephant.element.classList.remove("e_asleep_unhappy");
+            Game.elephant.element.classList.add("e_awake_happy");
+        },
+        e_awake_unhappy: function () {
+            Game.elephant.element.classList.remove("e_asleep_neutral");
+            Game.elephant.element.classList.remove("e_asleep_happy");
+            Game.elephant.element.classList.remove("e_asleep_unhappy");
+            Game.elephant.element.classList.remove("e_awake_happy");
+            Game.elephant.element.classList.add("e_awake_unhappy");
+        }
+    },
+    energy: {
+        show: function () {
+            Game.energy_0.show();
+            Game.energy_1.show();
+            Game.energy_2.show();
+        },
+        hide: function () {
+            Game.energy_0.hide();
+            Game.energy_1.hide();
+            Game.energy_2.hide();
         }
     },
     energy_0: {
@@ -464,7 +463,6 @@ const Game = {
             });
         },
         hide: function () {
-            console.log("hide energy_0");
             Game.energy_0.element.classList.remove("fade_in");
             Game.energy_0.element.classList.add("hidden");
         }
@@ -482,7 +480,6 @@ const Game = {
             });
         },
         hide: function () {
-            console.log("hide energy_0");
             Game.energy_1.element.classList.remove("fade_in");
             Game.energy_1.element.classList.add("hidden");
         }
@@ -500,10 +497,94 @@ const Game = {
             });
         },
         hide: function () {
-            console.log("hide energy_0");
             Game.energy_2.element.classList.remove("fade_in");
             Game.energy_2.element.classList.add("hidden");
         }
+    }
+};
+
+const Dreams = {
+    dream1: {
+        /** @type Element */
+        element: document.querySelector('#dream_1'),
+        type: 'carrot',
+    },
+    dream2: {
+        /** @type Element */
+        element: document.querySelector('#dream_2'),
+        type: 'carrot',
+    },
+    dream3: {
+        /** @type Element */
+        element: document.querySelector('#dream_3'),
+        type: 'carrot',
+    },
+    types: {
+        good: ['carrot', 'lollipop', 'sun'],
+        bad: ['mouse'],
+    },
+    onGoodClick: function () {
+        clickPositive();
+        Dreams.shuffle();
+        Dreams.enable();
+    },
+    onBadClick: function () {
+        Game.scene.element.classList.add("locked");
+        Game.mouse.onClick();
+        Dreams.reset();
+        setTimeout(function () {
+            Dreams.shuffle();
+            Dreams.enable();
+            }, 2000);
+
+    },
+    _getClickEventForType: function (type) {
+        if (Dreams.types.good.includes(type)) {
+            return Dreams.onGoodClick;
+        }
+        return Dreams.onBadClick;
+    },
+    _getType: function (isGood) {
+        if (isGood) {
+            return randomElement(Dreams.types.good);
+        }
+        return randomElement(Dreams.types.bad);
+    },
+    shuffle: function () {
+        Game.scene.element.classList.remove("locked");
+        Dreams.reset();
+        // Get a random number to randomly pick a dream to be the bad one
+        let bad = randomNumber(1, 3);
+        Dreams.dream1.type = Dreams._getType(1 !== bad);
+        Dreams.dream2.type = Dreams._getType(2 !== bad);
+        Dreams.dream3.type = Dreams._getType(3 !== bad);
+
+        Dreams.dream1.element.classList.add(Dreams.dream1.type);
+        Dreams.dream2.element.classList.add(Dreams.dream2.type);
+        Dreams.dream3.element.classList.add(Dreams.dream3.type);
+    },
+    enable: function () {
+        Dreams.dream1.element.addEventListener("click", Dreams._getClickEventForType(Dreams.dream1.type));
+        Dreams.dream1.element.classList.add('pointer');
+
+        Dreams.dream2.element.addEventListener("click", Dreams._getClickEventForType(Dreams.dream2.type));
+        Dreams.dream2.element.classList.add('pointer');
+
+        Dreams.dream3.element.addEventListener("click", Dreams._getClickEventForType(Dreams.dream3.type));
+        Dreams.dream3.element.classList.add('pointer');
+    },
+    reset: function () {
+        Dreams.dream1.element.removeEventListener("click", Dreams._getClickEventForType(Dreams.dream1.type));
+        Dreams.dream1.element.classList.remove(Dreams.dream1.type);
+        Dreams.dream1.element.classList.remove('pointer');
+
+        Dreams.dream2.element.removeEventListener("click", Dreams._getClickEventForType(Dreams.dream2.type));
+        Dreams.dream2.element.classList.remove(Dreams.dream2.type);
+        Dreams.dream2.element.classList.remove('pointer');
+
+        Dreams.dream3.element.removeEventListener("click", Dreams._getClickEventForType(Dreams.dream3.type));
+        Dreams.dream3.element.classList.remove(Dreams.dream3.type);
+        Dreams.dream3.element.classList.remove('pointer');
     }
 };
 
@@ -514,24 +595,25 @@ const LevelComplete = {
         show: function () {
             LevelComplete.scene.element.classList.remove('hidden');
             LevelComplete.scene.element.classList.remove('fade_out');
-            LevelComplete.scene.element.classList.add('fade_in');
+            LevelComplete.scene.element.classList.add('fade_in_slow');
             Effects.playLevelComplete();
         },
         hide: function (next) {
             LevelComplete.scene.element.classList.remove('fade_in');
             LevelComplete.scene.element.classList.add('fade_out');
-            LevelComplete.scene.element.addEventListener('animationend', function _listener() {
-                LevelComplete.scene.element.classList.add('hidden');
-                LevelComplete.scene.element.removeEventListener('animationend', _listener);
-                next && next();
-            });
+            LevelComplete.scene.element.classList.add("hidden");
+            next && next();
+            // LevelComplete.scene.element.addEventListener('animationend', function _listener() {
+            //     LevelComplete.scene.element.classList.add('hidden');
+            //     LevelComplete.scene.element.removeEventListener('animationend', _listener);
+            //     next && next();
+            // });
         }
     },
     quitButton: {
         /** @type Element */
         element: document.querySelector('.levelcomplete_button_quit'),
         onClick: function () {
-            console.log('Quit the game');
             quitGame();
             Effects.playbuttonclick();
         },
@@ -548,7 +630,6 @@ const LevelComplete = {
         /** @type Element */
         element: document.querySelector('.levelcomplete_button_play_again'),
         onClick: function () {
-            console.log('Quit the game');
             hideLevelComplete(showStart);
             MenuBackground.show();
             Effects.playbuttonclick();
@@ -571,16 +652,18 @@ const GameOver = {
         show: function () {
             GameOver.scene.element.classList.remove('hidden');
             GameOver.scene.element.classList.remove('fade_out');
-            GameOver.scene.element.classList.add('fade_in');
+            GameOver.scene.element.classList.add('fade_in_slow');
         },
         hide: function (next) {
             GameOver.scene.element.classList.remove('fade_in');
-            GameOver.scene.element.classList.add('fade_out');
-            GameOver.scene.element.addEventListener('animationend', function _listener() {
-                GameOver.scene.element.classList.add('hidden');
-                GameOver.scene.element.removeEventListener('animationend', _listener);
-                next && next();
-            });
+            GameOver.scene.element.classList.add("fade_out");
+            GameOver.scene.element.classList.add("hidden");
+            next && next();
+            // GameOver.scene.element.addEventListener('animationend', function _listener() {
+            //     GameOver.scene.element.classList.add('hidden');
+            //     GameOver.scene.element.removeEventListener('animationend', _listener);
+            //     next && next();
+            // });
         }
     },
     quitButton: {
@@ -604,7 +687,7 @@ const GameOver = {
         /** @type Element */
         element: document.querySelector('.gameover_button_play_again'),
         onClick: function () {
-            console.log('Quit the game');
+            console.log('Play again, please');
             hideGameOver(showStart);
             MenuBackground.show();
             Effects.playbuttonclick();
@@ -624,7 +707,7 @@ const GameOver = {
 // Start scene
 
 function showStart() {
-    console.log('showStart');
+    Game.scene.element.classList.add('hidden');
     Start.scene.show();
     Start.playButton.show();
     Start.settingsButton.show();
@@ -632,7 +715,6 @@ function showStart() {
 }
 
 function hideStart(next) {
-    console.log('hideStart');
     Start.playButton.hide();
     Start.settingsButton.hide();
     Start.quitButton.hide();
@@ -643,7 +725,6 @@ function hideStart(next) {
 // Settings scene
 
 function showSettings() {
-    console.log('showSettings');
     Settings.scene.show();
     Settings.musicButton.show();
     Settings.effectsButton.show();
@@ -651,7 +732,6 @@ function showSettings() {
 }
 
 function hideSettings(next) {
-    console.log('hideSettings');
     Settings.musicButton.hide();
     Settings.effectsButton.hide();
     Settings.backButton.hide();
@@ -662,29 +742,18 @@ function hideSettings(next) {
 // Game scene
 
 function showGame() {
-    console.log('showGame');
     Game.scene.show();
-    Game.mouse.show();
-    Game.carrot.show();
-    Game.lollipop.show();
     Game.elephant.show();
-    Game.energy_0.show();
-    Game.energy_1.show();
-    Game.energy_2.show();
+    Game.energy.show();
 }
 
 //////////////////////////////////
 // End screens
 
 function gameOver() {
-    console.log("gameOver");
     Game.scene.hide();
-    Game.energy_0.hide();
-    Game.energy_1.hide();
-    Game.energy_2.hide();
-    Game.carrot.hide();
-    Game.mouse.hide();
-    Game.lollipop.hide();
+    Game.energy.hide();
+    Dreams.reset();
     GameOver.scene.show();
     GameOver.quitButton.show();
     GameOver.playAgainButton.show();
@@ -692,21 +761,15 @@ function gameOver() {
 }
 
 function hideGameOver(next) {
-    console.log("hideGameOver");
     GameOver.playAgainButton.hide();
     GameOver.quitButton.hide();
     GameOver.scene.hide(next);
 }
 
 function levelComplete() {
-    console.log("levelComplete");
     Game.scene.hide();
-    Game.energy_0.hide();
-    Game.energy_1.hide();
-    Game.energy_2.hide();
-    Game.carrot.hide();
-    Game.mouse.hide();
-    Game.lollipop.hide();
+    Game.energy.hide();
+    Dreams.reset();
     LevelComplete.scene.show();
     LevelComplete.quitButton.show();
     LevelComplete.playAgainButton.show();
@@ -714,12 +777,10 @@ function levelComplete() {
 }
 
 function hideLevelComplete(next) {
-    console.log("hideLevelComplete");
     LevelComplete.playAgainButton.hide();
     LevelComplete.quitButton.hide();
     LevelComplete.scene.hide(next);
 }
-
 
 //////////////////////////////////
 // Quit game
@@ -737,97 +798,32 @@ function quitGame() {
 //////////////////////////////////
 // Click functions
 
-
-function unhappy_elephant() {
-    console.log("The elephant cries");
-    document.querySelector("#elephant").classList.remove("e_asleep_neutral");
-    document.querySelector("#elephant").classList.add("e_asleep_unhappy");
-}
-
-function very_happy_elephant() {
-    console.log("The elephant smiles");
-    document.querySelector("#elephant").classList.remove("e_asleep_neutral");
-    document.querySelector("#elephant").classList.add("e_asleep_happy");
-}
-
-function happy_elephant() {
-    console.log("The elephant is happy");
-    document.querySelector("#elephant").classList.remove("e_asleep_unhappy");
-    document.querySelector("#elephant").classList.remove("e_asleep_happy");
-    document.querySelector("#elephant").classList.add("e_asleep_neutral");
-}
-
 function clickPositive() {
     points++;
-    document.querySelector("#points").innerHTML = points;
-    very_happy_elephant();
-    setTimeout (happy_elephant, 2000);
+    document.querySelector(".points").innerHTML = points;
+    document.querySelector(".points_level_complete").innerHTML = points;
+    document.querySelector(".points_game_over").innerHTML = points;
+    Game.elephant.e_asleep_happy();
     Effects.playPositiveClick();
+
+    if (document.querySelector(".e_asleep_happy")) {
+        clearElephantTimer();
+        setElephantTimer();
+    }
+    else if (document.querySelector(".e_asleep_neutral")) {
+        Game.elephant.element.classList.add(".e_asleep_happy");
+        setElephantTimer();
+    }
 }
 
 
 
+var elephantTimer;
 
-//////////////////////////////////////
+function setElephantTimer() {
+    elephantTimer = setTimeout (Game.elephant.e_asleep_neutral, 2000);
+}
 
-document.body.setScaledFont = function(f) {
-    var s = document.querySelector("#screen").offsetWidth;
-    console.log(s);
-    var fs = s * f;
-    this.style.fontSize = fs + '%';
-    return this
-};
-
-
-
-document.body.setScaledFont(0.12);
-window.onresize = function() {
-    document.body.setScaledFont(0.12);
-};
-
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////
-
-
-
-
-
-// let good = ['.carrot', '.lollipop', '.sun'];
-// let bad = ['.mouse'];
-//
-// function shuffleArray(array) {
-//     for (var i = array.length - 1; i > 0; i--) {
-//         var j = Math.floor(Math.random() * (i + 1));
-//         var temp = array[i];
-//         array[i] = array[j];
-//         array[j] = temp;
-//     }
-// }
-//
-// function randomItem(array) {
-//     return array[Math.floor(Math.random() * array.length)];
-// }
-//
-// function getSet() {
-//     let set = [
-//         randomItem(good),
-//         randomItem(good),
-//         randomItem(bad),
-//     ];
-//
-//     shuffleArray(set);
-//
-//     return set;
-// }
-//
-// for (let i = 0; i < 10; i++) {
-//     document.write(getSet() + "\n<br>");
-// }
+function clearElephantTimer() {
+    clearTimeout(elephantTimer);
+}

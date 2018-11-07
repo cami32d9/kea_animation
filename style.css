@@ -99,8 +99,13 @@ img {
 .dream {
     position: absolute;
     width: 18%;
-    height: 23.7%;
+    height: 24%;
     background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+.locked .dream {
+    background-image: url("elements/mouse.svg");
 }
 
 #dream_1 {
@@ -226,8 +231,9 @@ img {
     left: 59%;
     top: 50%;
     width: 20%;
-    height: 32.5%;
+    height: 33%;
     background-size: 100%;
+    background-repeat: no-repeat;
     animation-name: elephant_bobbing;
     animation-duration: 2s;
     animation-iteration-count: infinite;
@@ -283,7 +289,7 @@ img {
 
 /* POINTS */
 
-#points {
+.points {
     position: absolute;
     top: 18%;
     left: 0;
@@ -301,6 +307,15 @@ img {
     width: 13%;
     left: 85%;
     opacity: 0.9;
+}
+
+.end_points {
+    font-size: 3em;
+    position: absolute;
+    top: 55%;
+    left: 57%;
+    color: #CCCCCC;
+    white-space: nowrap;
 }
 
 
@@ -493,6 +508,14 @@ img {
     animation-fill-mode: forwards;
 }
 
+.fade_out_slow {
+    animation-name: fade_out_kf;
+    animation-duration: 3.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in;
+}
+
 @keyframes fade_out_kf {
     0% {
         opacity: 1;
@@ -511,6 +534,14 @@ img {
     animation-duration: 0.5s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+}
+
+.fade_in_slow {
+    animation-name: fade_in_kf;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in;
 }
 
 @keyframes fade_in_kf {

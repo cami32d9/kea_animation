@@ -7,6 +7,25 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Courgette" rel="stylesheet">
     <meta name="robots" content="noindex">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="manifest" href="icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
     <title>Sweet Dreams</title>
 </head>
 
@@ -20,9 +39,9 @@
             <div id="game_elements">
                 <div id="elephant" class="e_asleep_neutral"></div>
                 <div class="dreams">
-                    <div id="dream_1" class="dream carrot"></div>
-                    <div id="dream_2" class="dream mouse"></div>
-                    <div id="dream_3" class="dream lollipop"></div>
+                    <div id="dream_1" class="dream"></div>
+                    <div id="dream_2" class="dream"></div>
+                    <div id="dream_3" class="dream"></div>
                 </div>
 
                 <div id="thought_1">
@@ -50,14 +69,11 @@
                 </div>
                 <div id="points_bar">
                     <img src="elements/points.svg" alt="Points">
-                    <div id="points">
-                        0
-                    </div>
+                    <div class="points"></div>
                 </div>
                 <div id="time_bar">
                     <img src="elements/timer.svg" alt="Timer">
                     <div id="timer">
-                        00:03
                     </div>
                 </div>
             </div>
@@ -68,7 +84,7 @@
                 <audio src="elements/button_sound.mp3" id="button_sound"></audio>
                 <audio src="elements/positive_sound.mp3" id="positive_sound"></audio>
                 <audio src="elements/levelcomplete_sound.mp3" id="levelcomplete_sound"></audio>
-                <audio src="elements/my_favourite_lullaby_(100_bpm)_proud_music_preview.mp3" id="lullaby"></audio>
+                <audio src="elements/125_full_lullaby-music-box_0102_preview.mp3" id="lullaby" loop></audio>
             </div>
         </div>
         <div id="start" class="hidden">
@@ -121,6 +137,9 @@
             <div class="button gameover_button_quit">
                 <img src="elements/button_quit.svg" alt="Back">
             </div>
+            <div class="end_points">
+                Points: <span class="points_game_over"></span>
+            </div>
         </div>
         <div id="levelcomplete" class="hidden">
             <div id="levelcomplete_background">
@@ -131,6 +150,9 @@
             </div>
             <div class="button levelcomplete_button_quit">
                 <img src="elements/button_quit.svg" alt="Back">
+            </div>
+            <div class="end_points">
+                Points: <span class="points_level_complete"></span>
             </div>
         </div>
     </div>
