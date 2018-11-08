@@ -1,6 +1,5 @@
 /* HTML */
 
-
 html,
 body {
     margin: 0;
@@ -24,12 +23,6 @@ body {
     left: 0;
     right: 0;
     overflow: hidden;
-}
-
-#game {
-    width: 100%;
-    height: 100%;
-    position: relative;
 }
 
 img {
@@ -589,3 +582,12 @@ img {
     width: 100%;
     text-align: center;
 }
+
+
+/* OUT */
+
+/*#game {*/
+/*width: 100%;*/
+/*height: 100%;*/
+/*position: relative;*/
+/*}*/

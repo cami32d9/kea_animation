@@ -1,7 +1,6 @@
 window.addEventListener("load", sidenVises);
 
 
-
 //////////////////////////////////////
 // Utilities
 
@@ -13,9 +12,12 @@ function randomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+let points = 0;
+let lives = 3;
+
+
 //////////////////////////////////////
 // Font scaling
-
 
 document.body.setScaledFont = function(f) {
     var s = document.querySelector("#screen").offsetWidth;
@@ -29,16 +31,6 @@ document.body.setScaledFont(0.12);
 window.onresize = function() {
     document.body.setScaledFont(0.12);
 };
-
-
-function sidenVises() {
-    showStart();
-    Music.playSidenVises();
-}
-
-
-let points = 0;
-let lives = 3;
 
 
 //////////////////////////////////
@@ -77,6 +69,15 @@ const Timer = {
         return minutes.substr(-2) + ':' + seconds.substr(-2);
     }
 };
+
+const ScreenPoints = {
+    /** @type Element */
+    element1: document.querySelector(".points"),
+    /** @type Element */
+    element2: document.querySelector(".points_level_complete"),
+    /** @type Element */
+    element3: document.querySelector(".points_game_over"),
+}
 
 const Music = {
     enabled: true,
@@ -148,6 +149,19 @@ const Effects = {
         }
     }
 };
+
+const Screen = {
+    /** @type Element */
+    element: document.querySelector('#screen'),
+    hide: function () {
+        Screen.element.classList.add("fade_out");
+        Screen.element.addEventListener("animationend", function _listener() {
+            Screen.element.classList.add("hidden");
+            Screen.element.removeEventListener("animationend", _listener);
+        });
+
+    }
+}
 
 const MenuBackground = {
     /** @type Element */
@@ -338,8 +352,9 @@ const Game = {
         show: function () {
             lives = 3;
             points = 0;
-            document.querySelector(".points").innerHTML = points;
+            ScreenPoints.element1.textContent = points;
             document.querySelector('#timer').textContent = Timer.prettyTime(Game.scene.time);
+            document.querySelector("#thoughts").classList.remove("hidden");
             Game.scene.element.classList.remove('hidden');
             Game.scene.element.classList.remove('fade_out');
             Game.scene.element.classList.add('fade_in');
@@ -365,28 +380,6 @@ const Game = {
             Game.scene.element.classList.add('fade_out_slow');
             next && next();
         }
-    },
-    mouse: {
-        /** @type Element */
-        element: document.querySelector('.mouse'),
-        onClick: function () {
-            clearElephantTimer();
-            lives--;
-            console.log("Lives:" + lives);
-            let currentEnergy = "#energy_" + lives;
-            document.querySelector(currentEnergy).classList.add("fade_out");
-            if (lives === 0) {
-                gameOver();
-                Effects.playLongTrumpet();
-                Game.elephant.e_awake_unhappy();
-            }
-            else if (lives !== 0)
-            {
-                Effects.playShortTrumpet();
-                Game.elephant.e_asleep_unhappy();
-                setTimeout (Game.elephant.e_asleep_neutral, 2000);
-            }
-        },
     },
     elephant: {
         /** @type Element */
@@ -530,7 +523,7 @@ const Dreams = {
     },
     onBadClick: function () {
         Game.scene.element.classList.add("locked");
-        Game.mouse.onClick();
+        clickMouse();
         Dreams.reset();
         setTimeout(function () {
             Dreams.shuffle();
@@ -603,11 +596,7 @@ const LevelComplete = {
             LevelComplete.scene.element.classList.add('fade_out');
             LevelComplete.scene.element.classList.add("hidden");
             next && next();
-            // LevelComplete.scene.element.addEventListener('animationend', function _listener() {
-            //     LevelComplete.scene.element.classList.add('hidden');
-            //     LevelComplete.scene.element.removeEventListener('animationend', _listener);
-            //     next && next();
-            // });
+
         }
     },
     quitButton: {
@@ -630,6 +619,7 @@ const LevelComplete = {
         /** @type Element */
         element: document.querySelector('.levelcomplete_button_play_again'),
         onClick: function () {
+            console.log("Play again");
             hideLevelComplete(showStart);
             MenuBackground.show();
             Effects.playbuttonclick();
@@ -687,7 +677,7 @@ const GameOver = {
         /** @type Element */
         element: document.querySelector('.gameover_button_play_again'),
         onClick: function () {
-            console.log('Play again, please');
+            console.log("Play again");
             hideGameOver(showStart);
             MenuBackground.show();
             Effects.playbuttonclick();
@@ -705,6 +695,11 @@ const GameOver = {
 
 //////////////////////////////////
 // Start scene
+
+function sidenVises() {
+    showStart();
+    document.querySelector("#lullaby").volume = 0.6;
+}
 
 function showStart() {
     Game.scene.element.classList.add('hidden');
@@ -770,6 +765,7 @@ function levelComplete() {
     Game.scene.hide();
     Game.energy.hide();
     Dreams.reset();
+    document.querySelector("#thoughts").classList.add("hidden");
     LevelComplete.scene.show();
     LevelComplete.quitButton.show();
     LevelComplete.playAgainButton.show();
@@ -786,37 +782,46 @@ function hideLevelComplete(next) {
 // Quit game
 
 function quitGame() {
-    document.querySelector("#screen").classList.add("fade_out");
-    document.querySelector("#screen").addEventListener("animationend", function _listener() {
-        document.querySelector("#screen").classList.add("hidden");
-        document.querySelector("#screen").removeEventListener("animationend", _listener);
-    });
+    console.log("Quitting the game");
+    Screen.hide();
+    document.querySelector("#lullaby").pause();
 
 }
-
 
 //////////////////////////////////
 // Click functions
 
 function clickPositive() {
     points++;
-    document.querySelector(".points").innerHTML = points;
-    document.querySelector(".points_level_complete").innerHTML = points;
-    document.querySelector(".points_game_over").innerHTML = points;
+    ScreenPoints.element1.textContent = points;
+    ScreenPoints.element2.textContent = points;
+    ScreenPoints.element3.textContent = points;
     Game.elephant.e_asleep_happy();
+    clearElephantTimer();
+    setElephantTimer();
     Effects.playPositiveClick();
+}
 
-    if (document.querySelector(".e_asleep_happy")) {
-        clearElephantTimer();
-        setElephantTimer();
+function clickMouse() {
+    clearElephantTimer();
+    lives--;
+    console.log("Lives:" + lives);
+    let currentEnergy = "#energy_" + lives;
+    document.querySelector(currentEnergy).classList.add("fade_out");
+    if (lives === 0) {
+        gameOver();
+        Effects.playLongTrumpet();
+        Game.elephant.e_awake_unhappy();
     }
-    else if (document.querySelector(".e_asleep_neutral")) {
-        Game.elephant.element.classList.add(".e_asleep_happy");
-        setElephantTimer();
+    else if (lives !== 0) {
+        Effects.playShortTrumpet();
+        Game.elephant.e_asleep_unhappy();
+        setTimeout(Game.elephant.e_asleep_neutral, 2000);
     }
 }
 
-
+//////////////////////////////////
+// Elephant timer
 
 var elephantTimer;
 
