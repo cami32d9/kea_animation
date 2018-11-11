@@ -72,12 +72,17 @@ const Timer = {
 
 const ScreenPoints = {
     /** @type Element */
-    element1: document.querySelector(".points"),
+    pointsGameScreen: document.querySelector(".points"),
     /** @type Element */
-    element2: document.querySelector(".points_level_complete"),
+    pointsLevelComplete: document.querySelector(".points_level_complete"),
     /** @type Element */
-    element3: document.querySelector(".points_game_over"),
-}
+    pointsGameOver: document.querySelector(".points_game_over"),
+    update: function (points) {
+        ScreenPoints.pointsGameScreen.textContent = points;
+        ScreenPoints.pointsLevelComplete.textContent = points;
+        ScreenPoints.pointsGameOver.textContent = points;
+    }
+};
 
 const Music = {
     enabled: true,
@@ -161,7 +166,7 @@ const Screen = {
         });
 
     }
-}
+};
 
 const MenuBackground = {
     /** @type Element */
@@ -352,7 +357,7 @@ const Game = {
         show: function () {
             lives = 3;
             points = 0;
-            ScreenPoints.element1.textContent = points;
+            ScreenPoints.update(points);
             document.querySelector('#timer').textContent = Timer.prettyTime(Game.scene.time);
             document.querySelector("#thoughts").classList.remove("hidden");
             Game.scene.element.classList.remove('hidden');
@@ -793,9 +798,7 @@ function quitGame() {
 
 function clickPositive() {
     points++;
-    ScreenPoints.element1.textContent = points;
-    ScreenPoints.element2.textContent = points;
-    ScreenPoints.element3.textContent = points;
+    ScreenPoints.update(points);
     Game.elephant.e_asleep_happy();
     clearElephantTimer();
     setElephantTimer();
